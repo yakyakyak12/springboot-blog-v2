@@ -1,8 +1,11 @@
 package shop.mtcoding.blogv2.board;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public class BoardRepository {
+/*
+ * save(), findById(), findAll(), count(), deletById() // update빼고 다나옴 
+ */
+
+public interface BoardRepository extends JpaRepository<Board, Integer> {
 
 }
