@@ -28,23 +28,23 @@ public class BoardController {
 
   @GetMapping("/board/{id}/updateForm")
   public String updateForm(@PathVariable Integer id, HttpServletRequest request) {
-    Board board = boardService.게시글보기(id);
+    Board board = boardService.게시글수정보기(id);
     request.setAttribute("board", board);
-    System.out.println("테스트 2 " + board.getTitle());
     return "board/updateForm";
   }
 
   @PostMapping("/board/{id}/update")
-  public String update(BoardRequest.SaveDTO saveDTO, @PathVariable Integer id) {
-    boardService.게시글수정하기(saveDTO, id);
-    System.out.println("테스트 : " + saveDTO.getTitle());
+  public String update(@PathVariable Integer id, BoardRequest.UpdateDTO updateDTO) {
+    // body, where 데이터, session값
+    boardService.게시글수정하기(id, updateDTO);
+    System.out.println("테스트 : " + updateDTO.getTitle());
     return "redirect:/board/" + id;
   }
 
   @GetMapping("/board/{id}")
   public String detail(@PathVariable Integer id, Model model) {
     Board board = boardService.상세보기(id);
-    model.addAttribute("board", board);
+    model.addAttribute("board", board); // request에 담는 것과 동일하다.
     return "board/detail";
   }
 

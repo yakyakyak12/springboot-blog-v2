@@ -7,10 +7,16 @@ public class BoardRequest {
 
   @Getter
   @Setter
+  public static class UpdateDTO {
+    private String title;
+    private String content;
+  }
+
+  @Getter
+  @Setter
   public static class SaveDTO {
     private String title;
     private String content;
-
   }
 
 }

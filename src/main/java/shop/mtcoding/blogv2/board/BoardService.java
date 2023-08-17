@@ -43,21 +43,29 @@ public class BoardService {
     return boardRepository.findById(id).get();
   }
 
-  public Board 게시글수정하기(BoardRequest.SaveDTO saveDTO, Integer id) {
+  public Board 게시글수정하기(Integer id, BoardRequest.UpdateDTO updateDTO) {
     Board board = boardRepository.findById(id).get();
-    board.setTitle(saveDTO.getTitle());
-    board.setContent(saveDTO.getContent());
+    board.setTitle(updateDTO.getTitle());
+    board.setContent(updateDTO.getContent());
     boardRepository.save(board);
     return board;
   }
 
-  public Board 게시글보기(Integer id) {
-    return boardRepository.findById(id).get();
+  public Board 게시글수정보기(Integer id) {
+    try {
+      return boardRepository.findById(6).get();
+    } catch (Exception e) {
+      throw new RuntimeException("없는 게시글 입니다.");
+    }
   }
 
   @Transactional
   public void 삭제하기(Integer id) {
-    boardRepository.deleteById(id);
+    try {
+      boardRepository.deleteById(id);
+    } catch (Exception e) {
+      throw new RuntimeException(" ");
+    }
   }
 
 }
