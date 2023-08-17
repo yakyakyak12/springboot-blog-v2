@@ -41,13 +41,13 @@ public class UserController {
   }
 
   @PostMapping("/login")
-  public @ResponseBody String login(UserRequest.loginDTO loginDTO) {
+  public String login(UserRequest.loginDTO loginDTO) {
     User sessionUser = userService.로그인(loginDTO);
     if (sessionUser == null) {
       return Script.back("로그인 실패");
     }
     session.setAttribute("sessionUser", sessionUser);
-    return Script.href("/");
+    return "redirect:/";
   }
 
   @GetMapping("/user/updateForm")
@@ -65,6 +65,16 @@ public class UserController {
     User sessionUser = (User) session.getAttribute("sessionUser"); // 세션을 가져온다.
     User user = userService.회원수정(updateDTO, sessionUser.getId()); // 수정이 된 객체를 받음
     session.setAttribute("sessionUser", user); // 수정된 것으로 세션을 동기화 해준다.
+    return "redirect:/";
+  }
+
+  // 브라우저 GET /logout 요청을 함 (requst 1)
+  // 서버는 / 주소를 응답의 헤더에 담음 (Location), 상태코드 302를 응답
+  // 브라우저는 GET /로 재요청을 함 (requst 2)
+  // index 페이지 응답받고 랜더링함
+  @GetMapping("/logout")
+  public String logout() {
+    session.invalidate();
     return "redirect:/";
   }
 
