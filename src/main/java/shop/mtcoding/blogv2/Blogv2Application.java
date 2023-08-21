@@ -8,6 +8,7 @@ public class Blogv2Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Blogv2Application.class, args);
+		System.out.println("git 잘 되니?");
 	}
 
 }
