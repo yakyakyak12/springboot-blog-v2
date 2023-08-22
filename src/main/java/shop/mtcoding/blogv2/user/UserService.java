@@ -5,6 +5,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import shop.mtcoding.blogv2._core.error.ex.MyException;
 import shop.mtcoding.blogv2.user.UserRequest.UpdateDTO;
 import shop.mtcoding.blogv2.user.UserRequest.loginDTO;
 
@@ -30,12 +31,12 @@ public class UserService {
     User user = userRepository.findByUsername(loginDTO.getUsername());
     // 1. 유저네임 검증
     if (user == null) {
-      return null;
+      throw new MyException("유저네임이 없습니다.");
     }
 
     // 2. 패스워드 검증
     if (!user.getPassword().equals(loginDTO.getPassword())) {
-      return null;
+      throw new MyException("패스워드가 잘못되었습니다.");
     }
 
     return user;

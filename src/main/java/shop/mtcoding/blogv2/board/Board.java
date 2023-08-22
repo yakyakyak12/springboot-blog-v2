@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -49,6 +50,7 @@ public class Board {
     // OneToMany Lazy 전략 (디폴트)
 
     @JsonIgnoreProperties({"board"}) // 객체 안 필드를 json으로 직렬화 하지마
+    // @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL) // 반대방향 매핑 (나는 pk이가 아니에요) 
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY) // 반대방향 매핑 (나는 pk이가 아니에요) 
     private List<Reply> replies = new ArrayList<>();  
 
