@@ -6,8 +6,8 @@
         <div class="card-body">
             <form action="join" method="post">
                 <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Enter username" name="username" value="love">
-                    <button type="button" class="btn btn-warning">중복체크</button>
+                    <input type="text" class="form-control" placeholder="Enter username" id="username" name="username" value="ssar" onchange="usernameChange()"">
+                    <button type="button" class="btn btn-warning" onclick="check()">중복체크</button>
                 </div>
                 <div class="mb-3">
                     <input type="password" class="form-control" placeholder="Enter password" name="password"
@@ -17,9 +17,57 @@
                     <input type="email" class="form-control" placeholder="Enter email" name="email"
                         value="love@nate.com">
                 </div>
-                <button type="submit" class="btn btn-primary form-control">회원가입</button>
+                <button id="btnJoin" type="submit" class="btn btn-primary form-control" onclick="valid()">회원가입</button>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    let usernameSameCheck = false;
+
+    function usernameChange() {
+    console.log("변경됨");
+    usernameSameCheck = false;
+  }
+
+  function valid() {
+    if (usernameSameCheck) {
+      return true;
+    } else {
+      alert("유저네임 중복체크를 해주세요");
+      return false;
+    }
+  }
+
+    // 책임 : input태그로 부터 username을 가져와서 통신을 요청하고, 중복이 되었는지 확인한다.
+  async function check() {
+    // 1. DOM으로 부터 값 가져오기
+    let username = document.querySelector("#username").value;
+    //console.log("유저네임", username);
+
+    // 2. 통신하기
+    let response = await fetch(`/check?username=${username}`);
+
+    // 3. 파싱하기
+    let responseBody = await response.json(); // response.json();
+    console.log(responseBody);
+
+    if (responseBody.sucuess) {
+        alert(responseBody.data);
+      }else{
+       alert(responseBody.data);
+       }
+    
+    // let btnJoin = document.querySelector("#btnJoin");
+    // if (response.status == 200) {
+    //   alert(responseBody);
+    //   usernameSameCheck = true;
+    // } else {
+    //   alert(responseBody);
+    //   usernameSameCheck = false;
+    // }
+
+  }
+</script>
 {{> layout/footer}}

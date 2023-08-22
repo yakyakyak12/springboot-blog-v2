@@ -4,12 +4,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
+import shop.mtcoding.blogv2._core.error.ex.MyApiException;
 import shop.mtcoding.blogv2._core.error.ex.MyException;
+import shop.mtcoding.blogv2._core.util.ApiUtil;
 import shop.mtcoding.blogv2._core.util.Script;
 import shop.mtcoding.blogv2.user.UserRequest.loginDTO;
 
@@ -74,6 +80,15 @@ public class UserController {
   public String logout() {
     session.invalidate();
     return "redirect:/";
+  }
+
+  @GetMapping("/check")
+  public @ResponseBody ApiUtil<String> check(String username){
+  if (username.isEmpty()) {
+    throw new MyApiException("유저네임을 입력해주세요");
+  }
+  userService.중복체크(username);
+  return new ApiUtil<String>(true, "아이디를 사용할 수 있습니다");
   }
 
 }

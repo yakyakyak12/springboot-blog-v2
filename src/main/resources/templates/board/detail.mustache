@@ -67,6 +67,7 @@
     }
 
     async function saveReply(){
+            // DOM으로 값 받아오기
             let requestBody = {
                 boardId: document.querySelector("#boardId").value,
                 comment: document.querySelector("#comment").value
@@ -76,9 +77,10 @@
 
                 let response = await fetch("/api/reply/save",{
                     method:"post",
+                    // headers는 서버에 데이터를 보낼때 명시적으로 적는 것 (Get요청시 필요없음) 
                     headers:{
                         "Content-Type":"application/json"
-                    },
+                    }, 
                     body: JSON.stringify(requestBody)
                 });
 

@@ -5,6 +5,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import shop.mtcoding.blogv2._core.error.ex.MyApiException;
 import shop.mtcoding.blogv2._core.error.ex.MyException;
 import shop.mtcoding.blogv2.user.UserRequest.UpdateDTO;
 import shop.mtcoding.blogv2.user.UserRequest.loginDTO;
@@ -55,4 +56,12 @@ public class UserService {
     return user;
   }// 3. flush
 
+public void 중복체크(String username) {
+  User name = userRepository.findByUsername(username);
+  if (name != null) {
+    throw new MyApiException("아이디가 중복되었습니다");
+ }
 }
+}
+
+
