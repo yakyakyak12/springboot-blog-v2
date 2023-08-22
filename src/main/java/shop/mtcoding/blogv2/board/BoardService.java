@@ -1,6 +1,7 @@
 package shop.mtcoding.blogv2.board;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,9 +40,14 @@ public class BoardService {
   }
 
   public Board 상세보기(Integer id) {
-    // board 만 가져오면 된다 !!
-    return boardRepository.findById(id).get();
-  }
+     // board 만 가져오면 된다!!
+    Optional<Board> boardOP = boardRepository.mFindByIdJoinRepliesInUser(id);
+    if (boardOP.isPresent()) {
+        return boardOP.get();
+    } else {
+        throw new RuntimeException(id + "는 찾을 수 없습니다");
+    }
+}
 
   public Board 게시글수정하기(Integer id, BoardRequest.UpdateDTO updateDTO) {
     Board board = boardRepository.findById(id).get();

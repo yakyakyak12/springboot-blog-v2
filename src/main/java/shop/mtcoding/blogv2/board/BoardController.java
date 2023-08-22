@@ -1,9 +1,7 @@
 package shop.mtcoding.blogv2.board;
 
-import java.util.List;
-import java.util.Optional;
-
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,68 +13,86 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import shop.mtcoding.blogv2._core.util.Script;
+import shop.mtcoding.blogv2.user.User;
+
 @Controller
 public class BoardController {
-  @Autowired
-  private BoardService boardService;
 
-  @PostMapping("/board/{id}/delete")
-  public String delete(@PathVariable Integer id) {
-    boardService.삭제하기(id);
-    return "redirect:/";
-  }
+    @Autowired
+    private BoardService boardService;
 
-  @GetMapping("/board/{id}/updateForm")
-  public String updateForm(@PathVariable Integer id, HttpServletRequest request) {
-    Board board = boardService.게시글수정보기(id);
-    request.setAttribute("board", board);
-    return "board/updateForm";
-  }
+    @Autowired
+    private HttpSession session;
 
-  @PostMapping("/board/{id}/update")
-  public String update(@PathVariable Integer id, BoardRequest.UpdateDTO updateDTO) {
-    // body, where 데이터, session값
-    boardService.게시글수정하기(id, updateDTO);
-    System.out.println("테스트 : " + updateDTO.getTitle());
-    return "redirect:/board/" + id;
-  }
+    @Autowired
+    private BoardRepository boardRepository;
 
-  @GetMapping("/board/{id}")
-  public String detail(@PathVariable Integer id, Model model) {
-    Board board = boardService.상세보기(id);
-    model.addAttribute("board", board); // request에 담는 것과 동일하다.
-    return "board/detail";
-  }
+    @PostMapping("/board/{id}/update")
+    public String update(@PathVariable Integer id, BoardRequest.UpdateDTO updateDTO) {
+        // where 데이터, body, session값
+        boardService.게시글수정하기(id, updateDTO);
+        return "redirect:/board/" + id;
+    }
 
-  @GetMapping("/test")
-  public @ResponseBody Page<Board> test(@RequestParam(defaultValue = "0") Integer page, HttpServletRequest request) {
-    Page<Board> boardPG = boardService.게시글목록보기(page);
-    return boardPG; // ViewResolver (X), MessageConverter (O) -> json 직렬화
-  }
+    @GetMapping("/board/{id}/updateForm")
+    public String updateForm(@PathVariable Integer id, Model model) {
+        Board board = boardService.상세보기(id);
+        model.addAttribute("board", board); // request에 담는 것과 동일
+        return "board/updateForm";
+    }
 
-  // localhost:8080?page=1&keyword=바나나
-  @GetMapping("/")
-  public String index(@RequestParam(defaultValue = "0") Integer page, HttpServletRequest request) {
-    Page<Board> boardPG = boardService.게시글목록보기(page);
-    request.setAttribute("boardPG", boardPG);
-    request.setAttribute("prevPage", boardPG.getNumber() - 1);
-    request.setAttribute("nextPage", boardPG.getNumber() + 1);
-    return "index";
-  }
+    @PostMapping("/board/{id}/delete")
+    public String delete(@PathVariable Integer id) {
+        boardService.삭제하기(id);
+        return "redirect:/";
+    }
 
-  @GetMapping("/board/saveForm")
-  public String saveForm() {
-    return "board/saveForm";
-  }
+    @GetMapping("/board/{id}")
+    public String detail(@PathVariable Integer id, Model model) {
+        Board board = boardService.상세보기(id);
+        model.addAttribute("board", board);
+        return "board/detail";
+    }
 
-  // 1. 데이터 받기 (V)
-  // 2. 인증체크 (:TODO)
-  // 3. 유효성 검사 (:TODO)
-  // 4. 핵심로직 호출(서비스)
-  // 5. view or data 응답
-  @PostMapping("/board/save")
-  public String save(BoardRequest.SaveDTO saveDTO) {
-    boardService.게시글쓰기(saveDTO, 1);
-    return "redirect:/";
-  }
+    
+    @GetMapping("/test/board/{id}")
+    public @ResponseBody Board testDetail(@PathVariable Integer id) {
+        Board board = boardRepository.mFindByIdJoinRepliesInUser(id).get();
+        return board;
+    }
+
+    // localhost:8080?page=1&keyword=바나나
+    @GetMapping("/")
+    public String index(@RequestParam(defaultValue = "0") Integer page, HttpServletRequest request) {
+        Page<Board> boardPG = boardService.게시글목록보기(page);
+        request.setAttribute("boardPG", boardPG);
+        request.setAttribute("prevPage", boardPG.getNumber() - 1);
+        request.setAttribute("nextPage", boardPG.getNumber() + 1);
+
+        return "index";
+    }
+
+    @GetMapping("/test")
+    public @ResponseBody Page<Board> test(@RequestParam(defaultValue = "0") Integer page, HttpServletRequest request) {
+        Page<Board> boardPG = boardService.게시글목록보기(page);
+        return boardPG; // ViewResolver (X), MessageConverter (O) -> json 직렬화
+    }
+
+    @GetMapping("/board/saveForm")
+    public String saveForm() {
+        return "board/saveForm";
+    }
+
+    // 1. 데이터 받기 (V)
+    // 2. 인증체크 (:TODO)
+    // 3. 유효성 검사 (:TODO)
+    // 4. 핵심로직 호출 (V)
+    // 5. view or data 응답} (V)
+    @PostMapping("/board/save")
+    public String save(BoardRequest.SaveDTO saveDTO) {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        boardService.게시글쓰기(saveDTO, sessionUser.getId());
+        return "redirect:/";
+    }
 }
