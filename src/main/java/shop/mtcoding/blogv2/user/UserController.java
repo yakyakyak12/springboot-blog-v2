@@ -38,6 +38,10 @@ public class UserController {
   // M - V - C
   @PostMapping("join")
   public String join(UserRequest.JoinDTO joinDTO) {
+    System.out.println("로그 : " + joinDTO.getPic().getOriginalFilename());
+    System.out.println("로그 : " + joinDTO.getPic().getSize());
+    System.out.println("로그 : " + joinDTO.getPic().getContentType());
+
     userService.회원가입(joinDTO);
     return "user/loginForm"; // 응답될 때 persist 초기화
   }
@@ -90,5 +94,7 @@ public class UserController {
   userService.중복체크(username);
   return new ApiUtil<String>(true, "아이디를 사용할 수 있습니다");
   }
+
+
 
 }

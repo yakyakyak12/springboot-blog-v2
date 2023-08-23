@@ -1,12 +1,13 @@
 {{> layout/header}}
 
+
 <div class="container p-5">
     <div class="card">
         <div class="card-header"><b>회원가입을 해주세요</b></div>
         <div class="card-body">
-            <form action="join" method="post">
+            <form action="join" method="post" enctype="multipart/form-data" onsubmit="return valid()">
                 <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Enter username" id="username" name="username" value="ssar" onchange="usernameChange()"">
+                    <input type="text" class="form-control" placeholder="Enter username" id="username" name="username" value="ssar" onchange="usernameChange()">
                     <button type="button" class="btn btn-warning" onclick="check()">중복체크</button>
                 </div>
                 <div class="mb-3">
@@ -17,7 +18,10 @@
                     <input type="email" class="form-control" placeholder="Enter email" name="email"
                         value="love@nate.com">
                 </div>
-                <button id="btnJoin" type="submit" class="btn btn-primary form-control" onclick="valid()">회원가입</button>
+                <div class="mb-3">
+                  <input type="file" class="form-control" placeholder="Enter pic" name="pic">
+               </div>
+                <button id="btnJoin" type="submit" class="btn btn-primary form-control">회원가입</button>
             </form>
         </div>
     </div>
@@ -52,21 +56,17 @@
     // 3. 파싱하기
     let responseBody = await response.json(); // response.json();
     console.log(responseBody);
-
+    let btnJoin = document.querySelector("#btnJoin");
     if (responseBody.sucuess) {
+       usernameSameCheck = true;
         alert(responseBody.data);
       }else{
-       alert(responseBody.data);
+        usernameSameCheck = false;
+        alert(responseBody.data);
        }
     
-    // let btnJoin = document.querySelector("#btnJoin");
-    // if (response.status == 200) {
-    //   alert(responseBody);
-    //   usernameSameCheck = true;
-    // } else {
-    //   alert(responseBody);
-    //   usernameSameCheck = false;
-    // }
+
+
 
   }
 </script>
