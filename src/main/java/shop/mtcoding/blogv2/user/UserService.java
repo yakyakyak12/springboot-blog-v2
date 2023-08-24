@@ -26,16 +26,18 @@ public class UserService {
 
   @Transactional
   public void 회원가입(UserRequest.JoinDTO joinDTO) {
-
+    
     UUID uuid = UUID.randomUUID(); // 랜덤한 해시값을 만들어줌
-    String fileName = uuid + "_" + joinDTO.getPic().getOriginalFilename();
-    System.out.println("fileName : " + fileName);
-
+    String fileName = null;
+    if (joinDTO.getPic().getOriginalFilename() != null) {
+      fileName = uuid + "_" + joinDTO.getPic().getOriginalFilename();
+    }
+    fileName = "img.jpg";
     // 프로젝트 실행 파일로 변경하면 -< blogv2-1.jar
     // 해당 실행파일 경로에 images 폴더가 필요함. 
     Path filePath = Paths.get(MyPath.IMG_PATH+fileName); // 서버 실행되는 위치의 폴더를 패치로 잡아준다
     try {
-      Files.write(filePath, joinDTO.getPic().getBytes());
+      Files.write(filePath, joinDTO.getPic().getBytes()); // files.write는 버퍼라고 생각하면 된다. 
     } catch (Exception e) {
       throw new MyException(e.getMessage());
     }

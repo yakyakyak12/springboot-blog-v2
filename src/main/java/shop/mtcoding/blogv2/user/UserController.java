@@ -41,7 +41,7 @@ public class UserController {
     // System.out.println("로그 : " + joinDTO.getPic().getOriginalFilename());
     // System.out.println("로그 : " + joinDTO.getPic().getSize());
     // System.out.println("로그 : " + joinDTO.getPic().getContentType());
-
+    
     userService.회원가입(joinDTO);
     return "user/loginForm"; // 응답될 때 persist 초기화
   }
